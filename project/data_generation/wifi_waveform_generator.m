@@ -10,7 +10,7 @@ for cbw = channel_bandwidths
             for gi = guard_intervals
                 try
                     fprintf("Generating: %s %s %s %s\n", cbw, cc, modulationCodingScheme(mcs), gi);
-                    % 802.11n/ac (OFDM) configuration:
+                    % 802.11n/ac (OFDM) configuration
                     vhtCfg = wlanVHTConfig('ChannelBandwidth', cbw, ...
                         'NumUsers', 1, ...
                         'NumTransmitAntennas', 1, ...
@@ -26,15 +26,19 @@ for cbw = channel_bandwidths
 
                     % number of packets
                     numPackets = 1;
-                    % input bit source:
+                    % input bit source
                     in = randi([0, 1], 1000, 1);
 
-                    % waveform generation:
+                    % waveform generation
                     waveform = wlanWaveformGenerator(in, vhtCfg, ...
                         'NumPackets', numPackets, ...
                         'IdleTime', 0, ...
                         'ScramblerInitialization', 93, ...
                         'WindowTransitionTime', 1e-07);
+                    
+                    % TODO: introduce noise impairment to waveform
+                    %snr = 20;
+                    %waveform = awgn(waveform, snr, 'measured');
 
                     % write into file
                     waveformTable = table(waveform, 'VariableNames', {'I+Qi'});
