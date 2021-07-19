@@ -8,8 +8,7 @@ for cbw = channel_bandwidths
     for cc = channel_codings
         for mcs = modulation_coding_schemes
             for gi = guard_intervals
-                try
-                    fprintf("Generating: %s %s %s %s\n", cbw, cc, modulationCodingScheme(mcs), gi);
+                try                    
                     % 802.11n/ac (OFDM) configuration
                     vhtCfg = wlanVHTConfig('ChannelBandwidth', cbw, ...
                         'NumUsers', 1, ...
@@ -25,7 +24,7 @@ for cbw = channel_bandwidths
                         'PartialAID', 275);
 
                     % number of packets
-                    numPackets = 1;
+                    numPackets = 5;
                     % input bit source
                     in = randi([0, 1], 1000, 1);
 
@@ -41,8 +40,12 @@ for cbw = channel_bandwidths
                     %waveform = awgn(waveform, snr, 'measured');
 
                     % write into file
+                    [symbols, time] = size(waveform);
+                    waveform = reshape(waveform, [symbols*time, 1]);
                     waveformTable = table(waveform, 'VariableNames', {'I+Qi'});
                     writetable(waveformTable, outputFileName(cbw, cc, mcs, gi));
+
+                    fprintf("Generating: %s %s %s %s\n", cbw, cc, modulationCodingScheme(mcs), gi);
                 catch
                     warning("Skipping: %s %s %s %s", cbw, cc, modulationCodingScheme(mcs), gi);
                 end
