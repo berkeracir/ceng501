@@ -7,7 +7,7 @@ for rc = reference_channels
     for dm = duplex_modes
         for ts = transmission_schemes
             try
-                % Downlink RMC configuration:
+                % Downlink RMC configuration
                 cfg = struct('RC', rc, ...
                     'DuplexMode', dm, ...
                     'NCellID', 0, ...
@@ -26,10 +26,10 @@ for rc = reference_channels
                 cfg.PDSCH.PMISet = 1;
                 cfg = lteRMCDL(cfg);
 
-                % input bit source:
+                % input bit source
                 in = randi([0, 1], 1000, 1);
 
-                % waveform generation:
+                % waveform generation
                 [waveform, grid, config] = lteRMCDLTool(cfg, in);
 
                 % TODO: introduce noise impairment to waveform
@@ -55,5 +55,3 @@ end
 function fileName = outputFileName(rc, dm, ts, m, rb)
     fileName = sprintf("generated_data/lte/lte_%s_%s_%s_%s_%d.txt", rc, dm, ts, m, rb);
 end
-
-
