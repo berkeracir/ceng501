@@ -89,9 +89,9 @@ But what about STFT of the segments? STFT of a batch of segments is in the shape
 
 In order to decide which shape is better in terms of classification performance, I planned to compare CNN, LSTM and CNN-LSTM architectures with different input shapes.
 
-In order to decide whether FDA improves the classification accuracy, I planned to compare CNN, LSTM and CNN-LSTM architectures with and without FDA. I also planned to test that whether using FDA with the segment improves the classification performance as the authors mention that FDA is used together with the segment (512 I/Q pair).
+In order to decide whether FDA improves the classification accuracy, I planned to compare CNN, LSTM and CNN-LSTM architectures with and without FDA. I also planned to test that whether using FDA with the segment improves the classification performance as the authors mention that FDA is used together with the segment (512 I/Q pair). When STFT of a segment is used together with the segment data, the input batch shape is `(B, 512, 4)` where 1 dimension is for complex I/Q values and 3 dimension for complex STFT values. 
 
-In this project, I tried to do the followings in my implementations:
+In this project, my goal was to do the followings in my implementations and compare their results in terms of classification accuracy:
 * Train FCNN (Fully-Connected Neural Network), CNN, LSTM, CNN-LSTM model
 * Use different input shapes
 * Use segment, FDA and FDA with segment as an input
@@ -103,7 +103,7 @@ In this project, I tried to do the followings in my implementations:
 
 ### 3.1.1 Dataset Generation
 
-I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to generate waveforms with AWGN channel model. Waveforms are generated with every possible waveform combinations (which might be more extensive than the project's waveform parameters). For generating WiFi and LTE data, MATLAB script is written. I tried to write a similar script for generating 5G data, but *5G Toolbox* interface was not mature enough as *WLAN and LTE Toolboxes*. Therefore, I generated the 5G data from the 5G waveform generator GUI and saved waveform data into files. Then, 5G waveform data was read from them and written into dataset with *MATLAB* script. It is said that, in the forums of *MathWorks*, *5G Toolbox* interface will be updated in *MATLAB R2021b* release so that script similar to *WiFi* and *LTE* waveform generator can be written for *5G* data generation.
+I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* release to generate waveforms with AWGN channel model. Waveforms are generated with every possible waveform combinations (which might be more extensive than the project's waveform parameters). For generating WiFi and LTE data, MATLAB script is written. I tried to write a similar script for generating 5G data, but *5G Toolbox* interface was not mature enough as *WLAN and LTE Toolboxes* as 5G is much newer technology. Therefore, I generated the 5G data from the 5G Toolbox GUI and saved waveform variables into files. Then, 5G waveform variables was loaded from the files and written into dataset with a *MATLAB* script. It is said that, in the forums of *MathWorks*, *5G Toolbox* interface will be updated in *MATLAB R2021b* release so that script similar to *WiFi* and *LTE* waveform generator can be written for *5G* data generation.
 
 For the project, approximately 45,000 segments (512 I/Q pairs) are generated: 14,410 WiFi, 13,972 LTE and 16,170 5G segments. The number of generated segments can be easily increased. Visualization of 256 I/Q pairs can be seen below.
 
