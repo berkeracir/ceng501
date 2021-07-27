@@ -25,7 +25,7 @@ The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox*
 <table style="margin-left:auto; margin-right:auto">
     <tr>
         <td><p align="center">
-            <img src="./figures/table1.png" alt="Parameter Options for Waveform Generator" width="250"/>
+            <img src="./figures/table1.png" alt="Parameter Options for Waveform Generator" width="350"/>
             <br>Table I from the paper: Parameter Options for Waveform Generator</br>
         </p></td>
         <td><p align="center">
@@ -53,7 +53,7 @@ In the paper, there are no information about the depth of the network, number of
 <table style="margin-left:auto; margin-right:auto">
     <tr>
         <td><p align="center">
-            <img src="./figures/equation7.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" height="50"/>
+            <img src="./figures/equation7.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" height="100"/>
             <br>Equation 7 from [2]: Scaled Exponential Linear Unit (SELU)</br>
         </p></td>
     </tr>
