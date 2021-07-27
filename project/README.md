@@ -44,18 +44,76 @@ Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier 
   <br>Figure 2 from the paper: Overview of the proposed FDA-CNN-LSTM classifier</br>
 </p>
 
-In the paper, there are no information about the depth of the network, number of the layers, layout of the layers, number of the layers, number of the hidden neurons in LSTM or Dense layers. They used Scaled Exponential Linear Unit (SELU) [2] activation function between the layers. 
+In the paper, there are no information about the depth of the network, number of the layers, layout of the layers, number of the layers, number of the hidden neurons in LSTM or Dense layers, training such as learning rate, optimizer, epochs, batch size, loss curves etc. Scaled Exponential Linear Unit (SELU) [2] is used as an activation function in order to avoid vanishing gradient problem. SELU can be seen in *Equation 7*, $\alpha\approx 1.6733$ and $\lambda\approx 1.0507$ .
 
 <p align="center">
   <img src="./figures/equation7.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" style="width: 40vw"/>
   <br>Equation 7 from [2]: Scaled Exponential Linear Unit (SELU)</br>
 </p>
 
+STFT with Kaisar-Bessel window function is applied to the input segments with 512 I/Q pairs; however, there are no information about the window length, shape factor and side-lobe attenuation.
+
+I/Q samples are from the time-domain and its frequency-domain information is obtained by applying STFT.
+
+One of the unmentioned information was about input size and this was one of the hardest part in this project. Generated I/Q data is complex number; therefore, it's real part (I) and imaginary part (Q) is split such that one segment is in the shape of `512, 2`
+
 ## 2.2. My interpretation 
 
 ### 2.2.1 Data Generation
 
-Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creating the dataset  by transmission and reception. Since, I do not have any equipment for waveform transmission and reception, I generated data directly within the *MATLAB*.
+Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creating the dataset by transmitting and receiving WiFi, LTE and 5G waveforms. Since, I do not have any equipment for waveform transmission and reception, I generated data directly within the *MATLAB* and was able to generate pure signals (WiFi, LTE and 5G without coexistencing).
+
+I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to generate waveforms within AWGN channel. Waveforms are generated with every possible waveform combinations which might be more extensive than the project's waveform parameters. For the implementation, approximately 45,000 segments are generated: 14,410 WiFi, 13,972 LTE and 16,170 5G segments. The number of generated segments can be easily increased. Visualization of 256 I/Q pairs can be seen below.
+
+<table>
+    <tr valign="top">
+        <td><p align="center">
+            <img src="./figures/wifi_t.png" alt="Generated WiFi Data in Time-Domain"/>
+            <br>Generated WiFi Data in Time-Domain</br>
+        </p></td>
+        <td><p align="center">
+            <img src="./figures/wifi_c.png" alt="Generated WiFi Data Constellation Scheme"/>
+            <br>Generated WiFi Data Constellation Scheme</br>
+        </p></td>
+        <td><p align="center">
+            <img src="./figures/wifi_f.png" alt="Generated WiFi Data with FDA"/>
+            <br>Generated WiFi Data with FDA</br>
+        </p></td>
+    </tr>
+    <tr valign="top">
+        <td><p align="center">
+            <img src="./figures/lte_t.png" alt="Generated LTE Data in Time-Domain"/>
+            <br>Generated LTE Data in Time-Domain</br>
+        </p></td>
+        <td><p align="center">
+            <img src="./figures/lte_c.png" alt="Generated LTE Data Constellation Scheme"/>
+            <br>Generated LTE Data Constellation Scheme</br>
+        </p></td>
+        <td><p align="center">
+            <img src="./figures/lte_f.png" alt="Generated LTE Data with FDA"/>
+            <br>Generated LTE Data with FDA</br>
+        </p></td>
+    </tr>
+    <tr valign="top">
+        <td><p align="center">
+            <img src="./figures/nr5g_t.png" alt="Generated 5G Data in Time-Domain"/>
+            <br>Generated 5G Data in Time-Domain</br>
+        </p></td>
+        <td><p align="center">
+            <img src="./figures/nr5g_c.png" alt="Generated 5G Data Constellation Scheme"/>
+            <br>Generated 5G Data Constellation Scheme</br>
+        </p></td>
+        <td><p align="center">
+            <img src="./figures/nr5g_f.png" alt="Generated 5G Data with FDA"/>
+            <br>Generated 5G Data with FDA</br>
+        </p></td>
+    </tr>
+    <tr valign="top">
+        <td colspan="3"><p align="center">
+            Generated Data's Visualizations
+        </p></td>
+    </tr>
+</table>
 
 # 3. Experiments and results
 
