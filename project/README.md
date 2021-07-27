@@ -48,7 +48,7 @@ Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier 
     </tr>
 </table>
 
-In the paper, there are no information about the depth of the network, number of the layers, layout of the layers, number of the layers, number of the hidden neurons in LSTM or Dense layers, training such as learning rate, optimizer, epochs, batch size, loss curves etc. Scaled Exponential Linear Unit (SELU) [2] is used as an activation function in order to avoid vanishing gradient problem. SELU can be seen in *Equation 7*, $\alpha\approx 1.6733$ and $\lambda\approx 1.0507$ .
+In the paper, there are no information about the depth of the network, number of the layers, layout of the layers, number of the layers, number of the hidden neurons in LSTM or Dense layers, training such as learning rate, optimizer, epochs, batch size, loss curves etc. Scaled Exponential Linear Unit (SELU) [2] is used as an activation function in order to avoid vanishing gradient problem. SELU can be seen in *Equation 7*, **α ≈ 1.6733** and **λ ≈ 1.0507**.
 
 <table style="margin-left:auto; margin-right:auto">
     <tr>
@@ -59,7 +59,7 @@ In the paper, there are no information about the depth of the network, number of
     </tr>
 </table>
 
-STFT with Kaisar-Bessel window function is applied to the input segments with 512 I/Q pairs; however, there are no information about the window length, shape factor and side-lobe attenuation.
+STFT with Kaisar-Bessel window function is applied to the input segmsents with 512 I/Q pairs; however, there are no information about the window length, shape factor and side-lobe attenuation.
 
 I/Q samples are from the time-domain and its frequency-domain information is obtained by applying STFT.
 
