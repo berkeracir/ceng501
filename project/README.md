@@ -10,9 +10,9 @@ In this project, implementation of a signal classifier with the combination of C
 
 Authors of the paper develop a deep neural network for classification of coexisting signal types such as IEEE802.11 (WiFi), LTE (Long Term Evolution) and 5G-NR (5G New Radio). Also, this network works on directly received signal's I/Q (In-Phase and Quadrature) samples meaning that receiver side does not have to decode the received signal in order to detect its type. The proposed architecture combines both CNN and RNN and uses segment of I/Q samples for training. It is trained in both simulation environment and experimental environment with the trasmitter and receiver hardware. Their results show that proposed architecture can achieve accurate classification in both environments.
 
-WiFi, LTE and 5G-NR signals can coexist in the shared spectrum (5-6 GHz) so assesment of the wireless environment is crucial in terms of better communication. In the paper, there are 7 classes for the classification task: WiFi, LTE, 5G, WiFi+LTE, WiFi+5G, LTE+5G, WiFi+LTE+5G
+WiFi, LTE and 5G signals can coexist in the shared spectrum (5-6 GHz) so assesment of the wireless environment is crucial in terms of better communication. In the paper, there are 7 classes for the classification task: WiFi, LTE, 5G, WiFi+LTE, WiFi+5G, LTE+5G, WiFi+LTE+5G
 
-Authors compare their architecture with other machine and deep learning architectures such as SVM (Support Vector Machine), RF (Random Forests), CNN (Convolutional Neural Networks) and LSTM (Long Short-Term Memory) and the proposed architecture shows better performance in the classification task. The authors also try to improve the architecture's accuracy by introducing Frequency-Domain Analysis (FDA) into the input segment. They exhibit extensive analysis on the impact of FDA, RNN layer, and segment length. Also, they show their analysis on SNR (Signal-to-Noise Ratio) and receiver antenna gains.
+Authors compare their architecture with other machine and deep learning architectures such as SVM (Support Vector Machine), RF (Random Forests), CNN (Convolutional Neural Networks) and LSTM (Long Short-Term Memory) and the proposed architecture shows better performance in the classification task. The authors also try to improve the architecture's accuracy by introducing Frequency-Domain Analysis (FDA) into the input segment. They exhibit extensive analysis on the impact of FDA, RNN layer, and segment length. Also, they show their detailed analysis on SNR (Signal-to-Noise Ratio) and receiver antenna gains.
 
 # 2. The method and my interpretation
 
@@ -37,7 +37,7 @@ The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox*
 
 ### 2.1.2 CNN-LSTM Architecture
 
-Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier Transform) is applied to the segmented sequence of 512 I/Q pairs with Kaisar-Bessel window function and this is fed into convolutional layer, and then pooling layer. Convoluted and pooled input is flattened and further fed into LSTM layer. Output of the LSTM layer is passed to dense layer and then softmax layer.
+Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier Transform) is applied to the segmented sequence of 512 I/Q pairs with Kaiser-Bessel window function and this is fed into convolutional layer, and then pooling layer. Convoluted and pooled input is flattened and further fed into LSTM layer. Output of the LSTM layer is passed to dense layer and then softmax layer.
 
 <table style="margin-left:auto; margin-right:auto">
     <tr>
@@ -59,19 +59,53 @@ In the paper, there are no information about the depth of the network, number of
     </tr>
 </table>
 
-STFT with Kaisar-Bessel window function is applied to the input segmsents with 512 I/Q pairs; however, there are no information about the window length, shape factor and side-lobe attenuation.
+STFT with Kaiser-Bessel window function is applied to the input segmsents with 512 I/Q pairs; however, there are no information about the window length, shape factor (β) and side-lobe attenuation (α) values. I/Q samples are obtained from the time-domain, and its frequency-domain information is obtained by applying STFT. In the paper, FDA improves the model's performance.
 
-I/Q samples are from the time-domain and its frequency-domain information is obtained by applying STFT.
-
-One of the unmentioned information is about input size and this was one of the hardest part of this project. Generated I/Q data is a complex number; therefore, it's real part (I) and imaginary part (Q) is split such that one segment can be in the shape of `(512,)` or `(2, 512)`.
+One of the unmentioned information is about input size and this was one of the hardest part of this project. Generated I/Q data is a complex number; therefore, it's real part (I) and imaginary part (Q) has to be split such that one segment is in the shape of `(512, 2)` or `(2, 512)`.
 
 ## 2.2. My interpretation 
 
 ### 2.2.1 Data Generation
 
-Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creating the dataset by transmitting and receiving WiFi, LTE and 5G waveforms. Since, I do not have any equipment for waveform transmission and reception, I generated data directly within the *MATLAB* and was able to generate pure signals (WiFi, LTE and 5G without coexistencing).
+Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creating the dataset by transmitting and receiving WiFi, LTE and 5G waveforms. Since, I do not have any equipment for waveform transmission and reception, I planned to generate data directly within the *MATLAB* and generate pure signals (only WiFi, LTE and 5G signals without coexisting).
 
-I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to generate waveforms with AWGN. Waveforms are generated with every possible waveform combinations (which might be more extensive than the project's waveform parameters). For the implementation, approximately 45,000 segments are generated: 14,410 WiFi, 13,972 LTE and 16,170 5G segments. The number of generated segments can be easily increased. Visualization of 256 I/Q pairs can be seen below.
+### 2.2.2 CNN-LSTM Architecture
+
+Since there are information about only activation function which is SELU, I had to improvised the network's design. In the paper, the proposed architecture is compared against CNN and LSTM models, so I planned to start from implementing CNN and LSTM models and then combining both CNN and LSTM.
+
+As I mentioned, input shape was the puzzling part of this project since the I/Q value is a complex number. For example, a batch of segments with the shape of `(B, 512)` with complex numbers can be reshaped into to the following shapes before fed into to the CNN or LSTM layer:
+
+* `(B, 1, 512, 2)`: Real (I) and imaginary (Q) values are in the width dimension. (*CNN*)
+* `(B, 2, 512, 1)`: Real (I) and imaginary (Q) values are in the channel dimension. (*CNN*)
+* `(B', L, 512, 2)`: *L* different segments are used in the channel dimension where *L* is the sequence number. Real (I) and imaginary (Q) values are in the width dimension. (*CNN*)
+* `(B', L, 1024)`: *L* different segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened to input dimension. (*LSTM*)
+
+But what about STFT of the segments? STFT of a batch of segments is in the shape of `(B, 512, 3)` with complex values. Therefore, it can be reshaped into to the following shapes before passed into the CNN or LSTM layer:
+
+* `(B, 3, 512, 2)`: Real (I) and imaginary (Q) values are in the width dimension. (*CNN*)
+* `(B, 2, 512, 3)`: Real (I) and imaginary (Q) values are in the channel dimension. (*CNN*)
+* `(B', L, 512, 6)`: *L* different STFT of segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened into the width dimension. (*CNN*)
+* `(B', L, 3072)`: *L* different STFT of segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened to input dimension. (*LSTM*)
+
+In order to decide which shape is better in terms of classification performance, I planned to compare CNN, LSTM and CNN-LSTM architectures with different input shapes.
+
+In order to decide whether FDA improves the classification accuracy, I planned to compare CNN, LSTM and CNN-LSTM architectures with and without FDA. I also planned to test that whether using FDA with the segment improves the classification performance as the authors mention that FDA is used together with the segment (512 I/Q pair).
+
+In this project, I tried to do the followings in my implementations:
+* Train FCNN (Fully-Connected Neural Network), CNN, LSTM, CNN-LSTM model
+* Use different input shapes
+* Use segment, FDA and FDA with segment as an input
+* Train with noisy data (dataset generated with different SNR values in AWGN channel model)
+
+# 3. Experiments and results
+
+## 3.1. Experimental setup
+
+### 3.1.1 Dataset Generation
+
+I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to generate waveforms with AWGN channel model. Waveforms are generated with every possible waveform combinations (which might be more extensive than the project's waveform parameters). For generating WiFi and LTE data, MATLAB script is written. I tried to write a similar script for generating 5G data, but *5G Toolbox* interface was not mature enough as *WLAN and LTE Toolboxes*. Therefore, I generated the 5G data from the 5G waveform generator GUI and saved waveform data into files. Then, 5G waveform data was read from them and written into dataset with *MATLAB* script. It is said that, in the forums of *MathWorks*, *5G Toolbox* interface will be updated in *MATLAB R2021b* release so that script similar to *WiFi* and *LTE* waveform generator can be written for *5G* data generation.
+
+For the project, approximately 45,000 segments (512 I/Q pairs) are generated: 14,410 WiFi, 13,972 LTE and 16,170 5G segments. The number of generated segments can be easily increased. Visualization of 256 I/Q pairs can be seen below.
 
 <table style="margin-left:auto; margin-right:auto">
     <tr valign="top">
@@ -123,29 +157,14 @@ I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to gene
     </tr>
 </table>
 
-### 2.2.2 CNN-LSTM Architecture
+Generated datasets with WiFi, LTE and 5G can be downloaded from my Google Drive:
 
-Since there are information about only activation function which is SELU, I had to improvised the network's design. In the paper, the proposed architecture is compared against CNN and LSTM models, so I also implemented pure CNN and LSTM models for comparing them with the proposed CNN-LSTM model.
+* [Without Noise](https://drive.google.com/file/d/1sjkl9PG-CbqHMXUwUNx1jfrjSu0x9B2F/view?usp=sharing)
+* [With 20 SNR](https://drive.google.com/file/d/1OoPl6WmLFQdH5JIrZbsDT3PK8eks5Ujm/view?usp=sharing)
+* [With 15 SNR](https://drive.google.com/file/d/1dGlz121wXLq_G5vSnEVdilqpFW9zviJS/view?usp=sharing)
+* [With 10 SNR](https://drive.google.com/file/d/167y0E7whWAq4WAWVUwF_0AkZ4EiTBNOw/view?usp=sharing)
 
-As I mentioned, input shape was the puzzling part of this project since the I/Q value is a complex number. For example, a batch of segments with the shape of `(B, 512)` with complex numbers can be reshaped into to the following shapes before fed into to the model:
-
-* `(B, 1, 512, 2)`: Real (I) and imaginary (Q) values are in the width dimension.
-* `(B, 2, 512, 1)`: Real (I) and imaginary (Q) values are in the channel dimension.
-* `(B', L, 512, 2)`: *L* different segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are in the width dimension.
-
-But what about STFT of the segments? STFT of a batch of segments is in the shape of `(B, 512, 3)` with complex values. Therefore, it can be reshaped into to the following shapes before passed into the model:
-
-* `(B, 3, 512, 2)`: Real (I) and imaginary (Q) values are in the width dimension.
-* `(B, 2, 512, 3)`: Real (I) and imaginary (Q) values are in the channel dimension.
-* `(B', L, 512, 6)`: *L* different segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened into the width dimension.
-
-In order to decide which shape is better in terms of classification accuracy, I tried different shapes of input.
-
-# 3. Experiments and results
-
-## 3.1. Experimental setup
-
-The proposed architecture
+Also, manually saved MATLAB variables can be downloaded [here](https://drive.google.com/file/d/1Ap5mfu7WCsynA9--izgBzu1S3A1oAoV_/view?usp=sharing).
 
 ## 3.2. Running the code
 
