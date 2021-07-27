@@ -79,6 +79,7 @@ As I mentioned, input shape was the puzzling part of this project since the I/Q 
 * `(B, 2, 512, 1)`: Real (I) and imaginary (Q) values are in the channel dimension. (*CNN*)
 * `(B', L, 512, 2)`: *L* different segments are used in the channel dimension where *L* is the sequence number. Real (I) and imaginary (Q) values are in the width dimension. (*CNN*)
 * `(B', L, 1024)`: *L* different segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened to input dimension. (*LSTM*)
+* `(B, 512, 2)`: Segment size is used as sequence number. Real (I) and imaginary (Q) value of a I/Q pair is flattened to input dimension. (*LSTM*)
 
 But what about STFT of the segments? STFT of a batch of segments is in the shape of `(B, 512, 3)` with complex values. Therefore, it can be reshaped into to the following shapes before passed into the CNN or LSTM layer:
 
@@ -86,6 +87,7 @@ But what about STFT of the segments? STFT of a batch of segments is in the shape
 * `(B, 2, 512, 3)`: Real (I) and imaginary (Q) values are in the channel dimension. (*CNN*)
 * `(B', L, 512, 6)`: *L* different STFT of segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened into the width dimension. (*CNN*)
 * `(B', L, 3072)`: *L* different STFT of segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened to input dimension. (*LSTM*)
+* `(B, 512, 6)`: Segment size is used as sequence number. Real (I) and imaginary (Q) values STFT of a segment are flattened to input dimension. (*LSTM*)
 
 In order to decide which shape is better in terms of classification performance, I planned to compare CNN, LSTM and CNN-LSTM architectures with different input shapes.
 
@@ -165,6 +167,33 @@ Generated datasets with WiFi, LTE and 5G can be downloaded from my Google Drive:
 * [With 10 SNR](https://drive.google.com/file/d/167y0E7whWAq4WAWVUwF_0AkZ4EiTBNOw/view?usp=sharing)
 
 Also, manually saved MATLAB variables can be downloaded [here](https://drive.google.com/file/d/1Ap5mfu7WCsynA9--izgBzu1S3A1oAoV_/view?usp=sharing).
+
+### 3.1.2 Model Architecture
+
+Each model's parameters differs as input data shape varies. There are similarities in the namings of notebooks:
+
+* ***FDA*** means that STFT of segment is used as input to the model.
+* ***FDA+*** means that STFT of segment is used together with segment data as input to the model.
+* ***S*** means that I and Q values are used in width dimension in CNN model instead of channel dimension. In LSTM model, I and Q values are used directly in input dimension.
+
+For the training of all models, following parameters were used:
+
+* **Optimizer**: Adam
+* **Learning Rate**: 1e-4
+* **Batch Size**: 128
+* **Epochs**: 100
+* **Loss Function**: CrossEntropy
+* **Activation Function**: SELU
+
+In the paper, the authors uses Softmax layer but I simply used output of last Dense layer in Cross Entropy loss function which is similar to using Softmax layer. The proposed architecture does not contain Batch Normalization layers in CNN but I used them before Max Pooling layers.
+
+#### 3.1.2.1 Fully-Connected Neural Network (FCNN)
+
+There are 3 different FCNN models: *FCNN*, *FCNN-FDA*, *FCN-FDA+* and they contain only two linear layers.
+
+#### 3.1.2.2 Convolutional Neural Netwokrs (CNN)
+
+There are 8 different CNN models: **, **, **, **, **, **, **, **. 
 
 ## 3.2. Running the code
 
