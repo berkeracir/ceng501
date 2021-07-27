@@ -15,19 +15,19 @@ for fname = file_names
     cbw = waveStruct.config.waveform.ChannelBandwidth;
     waveform = waveStruct.waveform;
     
-    % TODO: introduce noise impairment to waveform
-    %snr = 20;
-    %waveform = awgn(waveform, snr, 'measured');
+    % introduce noise impairment to waveform
+    snr = 15;
+    waveform = awgn(waveform, snr, 'measured');
 
     % write into file
     [symbols, time] = size(waveform);
     waveform = reshape(waveform, [symbols*time, 1]);
     waveformTable = table(waveform, 'VariableNames', {'I+Qi'});
-    writetable(waveformTable, outputFileName(fr, mcs, scs, cbw));
+    writetable(waveformTable, outputFileName(snr, fr, mcs, scs, cbw));
     
     fprintf("Saving: %s %s %d %d\n", fr, mcs, scs, cbw);
 end
 
-function fileName = outputFileName(fr, mcs, scs, cbw)
-    fileName = sprintf("generated_data/nr5g/nr5g_%s_%s_%d_%d.txt", fr, mcs, scs, cbw);
+function fileName = outputFileName(snr, fr, mcs, scs, cbw)
+    fileName = sprintf("generated_data/nr5g_snr%d/nr5g_%s_%s_%d_%d.txt", snr, fr, mcs, scs, cbw);
 end

@@ -18,3 +18,5 @@
 - A Sequence Modeling Pipeline with PyTorch for Weather Prediction
 
 ## Project
+
+- Signal Detection and Classification in Shared Spectrum: A Deep Learning Approach

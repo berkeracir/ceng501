@@ -35,15 +35,15 @@ for cbw = channel_bandwidths
                         'ScramblerInitialization', 93, ...
                         'WindowTransitionTime', 1e-07);
                     
-                    % TODO: introduce noise impairment to waveform
-                    %snr = 20;
-                    %waveform = awgn(waveform, snr, 'measured');
+                    % introduce noise impairment to waveform
+                    snr = 15;
+                    waveform = awgn(waveform, snr, 'measured');
 
                     % write into file
                     [symbols, time] = size(waveform);
                     waveform = reshape(waveform, [symbols*time, 1]);
                     waveformTable = table(waveform, 'VariableNames', {'I+Qi'});
-                    writetable(waveformTable, outputFileName(cbw, cc, mcs, gi));
+                    writetable(waveformTable, outputFileName(snr, cbw, cc, mcs, gi));
 
                     fprintf("Generating: %s %s %s %s\n", cbw, cc, modulationCodingScheme(mcs), gi);
                 catch
@@ -79,6 +79,6 @@ function strMcs = modulationCodingScheme(mcs)
     end
 end
 
-function fileName = outputFileName(cbw, cc, mcs, gi)
-    fileName = sprintf("generated_data/wifi/wifi_%s_%s_%s_%s.txt", cbw, cc, modulationCodingScheme(mcs), gi);
+function fileName = outputFileName(snr, cbw, cc, mcs, gi)
+    fileName = sprintf("generated_data/wifi_snr%d/wifi_%s_%s_%s_%s.txt", snr, cbw, cc, modulationCodingScheme(mcs), gi);
 end

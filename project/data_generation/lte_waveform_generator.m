@@ -33,8 +33,8 @@ for rc = reference_channels
                 [waveform, grid, config] = lteRMCDLTool(cfg, in);
 
                 % TODO: introduce noise impairment to waveform
-                %snr = 20;
-                %waveform = awgn(waveform, snr, 'measured');
+                snr = 15;
+                waveform = awgn(waveform, snr, 'measured');
 
                 % write into file
                 rb = config.NDLRB;
@@ -42,7 +42,7 @@ for rc = reference_channels
                 [symbols, time] = size(waveform);
                 waveform = reshape(waveform, [symbols*time, 1]);
                 waveformTable = table(waveform, 'VariableNames', {'I+Qi'});
-                writetable(waveformTable, outputFileName(rc, dm, ts, m, rb));
+                writetable(waveformTable, outputFileName(snr, rc, dm, ts, m, rb));
 
                 fprintf("Generating: %s %s %s %s %d\n", rc, dm, ts, m, rb);
             catch
@@ -52,6 +52,6 @@ for rc = reference_channels
     end
 end
 
-function fileName = outputFileName(rc, dm, ts, m, rb)
-    fileName = sprintf("generated_data/lte/lte_%s_%s_%s_%s_%d.txt", rc, dm, ts, m, rb);
+function fileName = outputFileName(snr, rc, dm, ts, m, rb)
+    fileName = sprintf("generated_data/lte_snr%d/lte_%s_%s_%s_%s_%d.txt", snr, rc, dm, ts, m, rb);
 end
