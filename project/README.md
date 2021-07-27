@@ -187,13 +187,17 @@ For the training of all models, following parameters were used:
 
 In the paper, the authors uses Softmax layer but I simply used output of last Dense layer in Cross Entropy loss function which is similar to using Softmax layer. The proposed architecture does not contain Batch Normalization layers in CNN but I used them before Max Pooling layers.
 
-#### 3.1.2.1 Fully-Connected Neural Network (FCNN)
+#### 3.1.2.1 Fully-Connected Neural Networks (FCNN)
 
-There are 3 different FCNN models: *FCNN*, *FCNN-FDA*, *FCN-FDA+* and they contain only two linear layers.
+There are 3 different FCNN models: *FCNN*, *FCNN-FDA*, *FCN-FDA+* and they contain only two Dense layers.
 
-#### 3.1.2.2 Convolutional Neural Netwokrs (CNN)
+#### 3.1.2.2 Convolutional Neural Networks (CNN)
 
-There are 8 different CNN models: **, **, **, **, **, **, **, **. 
+There are 8 different CNN models: *CNN*, *CNN-1D*, *CNN-W*, *CNN-FDA*, *CNN-FDA+*, *CNN-S*, *CNN-S-FDA*, *CNN-S-FDA+*. All of these models contain 9 Convolutional layers, 3 Batch Normalization layer, 3 Max Pooling layer and two (or three) Dense layers. Every 3 Convolutional layers are followed by one Batch Normalization and one Max Pooling layers. Output of the last Max Pooling layer is flatten for the Dense layer.
+
+#### 3.1.2.3 Long Short-Term Memory (LSTM)
+
+There are 6 different LSTM models: *LSTM*, *LSTM-FDA*, *LSTM-FDA+*, *LSTM-S*, *LSTM-S-FDA*, *LSTM-S-FDA+*. Every LSTM models contain one LSTM layer with 32 hidden neurons followed by Dense layer.
 
 ## 3.2. Running the code
 
