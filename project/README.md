@@ -22,7 +22,7 @@ Authors compare their architecture with other machine and deep learning architec
 
 The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox* with different set of signal features such as channel bandwidth, modulation and coding scheme, subcarrier spacing, allocated resource blocks etc. Signal features can be seen in the *Table I*. The generated waveforms are transmitted by three transmitter antennas and received by one receiver antenna. Each transmitter antenna is responsible for one signal type and the receiver system collects received signal's raw I/Q values. Then, 512 consequent I/Q pairs are saved together as a segment. There are approximately 100,000 segments are used in training and testing the classifier. The dataset is split into 80% for training and %20 for testing. Experimental setup of the authors can be seen in *Figure 10*. Also, they introduce additive white Gaussian noise (AWGN) channel model with different SNR values to the data in order to simulate the noise in the wireless environment.
 
-<table>
+<table style="margin-left:auto; margin-right:auto">
     <tr>
         <td><p align="center">
             <img src="./figures/table1.png" alt="Parameter Options for Waveform Generator" style="width: 25vw"/>
@@ -39,7 +39,7 @@ The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox*
 
 Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier Transform) is applied to the segmented sequence of 512 I/Q pairs with Kaisar-Bessel window function and this is fed into convolutional layer, and then pooling layer. Convoluted and pooled input is flattened and further fed into LSTM layer. Output of the LSTM layer is passed to dense layer and then softmax layer.
 
-<table class="center">
+<table style="margin-left:auto; margin-right:auto">
     <tr>
         <td><p align="center">
             <img src="./figures/figure2.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" style="width: 80vw"/>
@@ -50,10 +50,10 @@ Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier 
 
 In the paper, there are no information about the depth of the network, number of the layers, layout of the layers, number of the layers, number of the hidden neurons in LSTM or Dense layers, training such as learning rate, optimizer, epochs, batch size, loss curves etc. Scaled Exponential Linear Unit (SELU) [2] is used as an activation function in order to avoid vanishing gradient problem. SELU can be seen in *Equation 7*, $\alpha\approx 1.6733$ and $\lambda\approx 1.0507$ .
 
-<table class="center">
+<table style="margin-left:auto; margin-right:auto">
     <tr>
         <td><p align="center">
-            <img src="./figures/equation7.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" style="height: 5vw"/>
+            <img src="./figures/equation7.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" style="width: 20vw"/>
             <br>Equation 7 from [2]: Scaled Exponential Linear Unit (SELU)</br>
         </p></td>
     </tr>
@@ -73,7 +73,7 @@ Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creati
 
 I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to generate waveforms within AWGN channel. Waveforms are generated with every possible waveform combinations which might be more extensive than the project's waveform parameters. For the implementation, approximately 45,000 segments are generated: 14,410 WiFi, 13,972 LTE and 16,170 5G segments. The number of generated segments can be easily increased. Visualization of 256 I/Q pairs can be seen below.
 
-<table class="center">
+<table style="margin-left:auto; margin-right:auto">
     <tr valign="top">
         <td><p align="center">
             <img src="./figures/wifi_t.png" alt="Generated WiFi Data in Time-Domain"/>
@@ -146,15 +146,6 @@ Discuss the paper in relation to the results in the paper and your results.
 [1]: [Zhang, W., Feng, M., Krunz, M., & Abyaneh, A. (2020). Signal Detection and Classification in Shared Spectrum: A Deep Learning Approach. *IEEE INFOCOM 2021*.](http://wireless.ece.arizona.edu/sites/default/files/Infocom_2021_wenhan.pdf)
 
 [2]: [Klambauer, G., Unterthiner, T., Mayr, A. & Hochreiter, S. (2017). Self-Normalizing Neural Networks.](https://arxiv.org/abs/1706.02515)
-
-@misc{klambauer2017selfnormalizing,
-      title={Self-Normalizing Neural Networks}, 
-      author={Günter Klambauer and Thomas Unterthiner and Andreas Mayr and Sepp Hochreiter},
-      year={2017},
-      eprint={1706.02515},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
-}
 
 # Contact
 
