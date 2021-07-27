@@ -4,7 +4,7 @@ This readme file is an outcome of the [CENG501 (Spring 2021)](http://kovan.ceng.
 
 # 1. Introduction
 
-In this project, I have tried to implement signal classifier with the combination of Convolutional and Recurrent Neural Networks as described in the paper[1] which is accepted for publishing in [IEEE INFOCOM 2021 Main Conference](https://infocom2021.ieee-infocom.org/accepted-paper-list-main-conference). 
+In this project, implementation of a signal classifier with the combination of Convolutional and Recurrent Neural Networks as described in the paper[1] is tried. The paper is accepted for publishing in [IEEE INFOCOM 2021 Main Conference](https://infocom2021.ieee-infocom.org/accepted-paper-list-main-conference).
 
 ## 1.1. Paper summary
 
@@ -63,7 +63,7 @@ STFT with Kaisar-Bessel window function is applied to the input segmsents with 5
 
 I/Q samples are from the time-domain and its frequency-domain information is obtained by applying STFT.
 
-One of the unmentioned information was about input size and this was one of the hardest part in this project. Generated I/Q data is complex number; therefore, it's real part (I) and imaginary part (Q) is split such that one segment is in the shape of `512, 2`
+One of the unmentioned information is about input size and this was one of the hardest part of this project. Generated I/Q data is a complex number; therefore, it's real part (I) and imaginary part (Q) is split such that one segment can be in the shape of `(512,)` or `(2, 512)`.
 
 ## 2.2. My interpretation 
 
@@ -71,7 +71,7 @@ One of the unmentioned information was about input size and this was one of the 
 
 Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creating the dataset by transmitting and receiving WiFi, LTE and 5G waveforms. Since, I do not have any equipment for waveform transmission and reception, I generated data directly within the *MATLAB* and was able to generate pure signals (WiFi, LTE and 5G without coexistencing).
 
-I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to generate waveforms within AWGN channel. Waveforms are generated with every possible waveform combinations which might be more extensive than the project's waveform parameters. For the implementation, approximately 45,000 segments are generated: 14,410 WiFi, 13,972 LTE and 16,170 5G segments. The number of generated segments can be easily increased. Visualization of 256 I/Q pairs can be seen below.
+I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to generate waveforms with AWGN. Waveforms are generated with every possible waveform combinations (which might be more extensive than the project's waveform parameters). For the implementation, approximately 45,000 segments are generated: 14,410 WiFi, 13,972 LTE and 16,170 5G segments. The number of generated segments can be easily increased. Visualization of 256 I/Q pairs can be seen below.
 
 <table style="margin-left:auto; margin-right:auto">
     <tr valign="top">
@@ -123,11 +123,29 @@ I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to gene
     </tr>
 </table>
 
+### 2.2.2 CNN-LSTM Architecture
+
+Since there are information about only activation function which is SELU, I had to improvised the network's design. In the paper, the proposed architecture is compared against CNN and LSTM models, so I also implemented pure CNN and LSTM models for comparing them with the proposed CNN-LSTM model.
+
+As I mentioned, input shape was the puzzling part of this project since the I/Q value is a complex number. For example, a batch of segments with the shape of `(B, 512)` with complex numbers can be reshaped into to the following shapes before fed into to the model:
+
+* `(B, 1, 512, 2)`: Real (I) and imaginary (Q) values are in the width dimension.
+* `(B, 2, 512, 1)`: Real (I) and imaginary (Q) values are in the channel dimension.
+* `(B', L, 512, 2)`: *L* different segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are in the width dimension.
+
+But what about STFT of the segments? STFT of a batch of segments is in the shape of `(B, 512, 3)` with complex values. Therefore, it can be reshaped into to the following shapes before passed into the model:
+
+* `(B, 3, 512, 2)`: Real (I) and imaginary (Q) values are in the width dimension.
+* `(B, 2, 512, 3)`: Real (I) and imaginary (Q) values are in the channel dimension.
+* `(B', L, 512, 6)`: *L* different segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened into the width dimension.
+
+In order to decide which shape is better in terms of classification accuracy, I tried different shapes of input.
+
 # 3. Experiments and results
 
 ## 3.1. Experimental setup
 
-Describe the setup of the original paper and whether you changed any settings.
+The proposed architecture
 
 ## 3.2. Running the code
 
