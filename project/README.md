@@ -39,17 +39,25 @@ The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox*
 
 Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier Transform) is applied to the segmented sequence of 512 I/Q pairs with Kaisar-Bessel window function and this is fed into convolutional layer, and then pooling layer. Convoluted and pooled input is flattened and further fed into LSTM layer. Output of the LSTM layer is passed to dense layer and then softmax layer.
 
-<p align="center">
-  <img src="./figures/figure2.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" style="width: 80vw"/>
-  <br>Figure 2 from the paper: Overview of the proposed FDA-CNN-LSTM classifier</br>
-</p>
+<table class="center">
+    <tr>
+        <td><p align="center">
+            <img src="./figures/figure2.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" style="width: 80vw"/>
+            <br>Figure 2 from the paper: Overview of the proposed FDA-CNN-LSTM classifier</br>
+        </p></td>
+    </tr>
+</table>
 
 In the paper, there are no information about the depth of the network, number of the layers, layout of the layers, number of the layers, number of the hidden neurons in LSTM or Dense layers, training such as learning rate, optimizer, epochs, batch size, loss curves etc. Scaled Exponential Linear Unit (SELU) [2] is used as an activation function in order to avoid vanishing gradient problem. SELU can be seen in *Equation 7*, $\alpha\approx 1.6733$ and $\lambda\approx 1.0507$ .
 
-<p align="center">
-  <img src="./figures/equation7.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" style="width: 40vw"/>
-  <br>Equation 7 from [2]: Scaled Exponential Linear Unit (SELU)</br>
-</p>
+<table class="center">
+    <tr>
+        <td><p align="center">
+            <img src="./figures/equation7.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" style="height: 5vw"/>
+            <br>Equation 7 from [2]: Scaled Exponential Linear Unit (SELU)</br>
+        </p></td>
+    </tr>
+</table>
 
 STFT with Kaisar-Bessel window function is applied to the input segments with 512 I/Q pairs; however, there are no information about the window length, shape factor and side-lobe attenuation.
 
@@ -65,7 +73,7 @@ Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creati
 
 I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* to generate waveforms within AWGN channel. Waveforms are generated with every possible waveform combinations which might be more extensive than the project's waveform parameters. For the implementation, approximately 45,000 segments are generated: 14,410 WiFi, 13,972 LTE and 16,170 5G segments. The number of generated segments can be easily increased. Visualization of 256 I/Q pairs can be seen below.
 
-<table>
+<table class="center">
     <tr valign="top">
         <td><p align="center">
             <img src="./figures/wifi_t.png" alt="Generated WiFi Data in Time-Domain"/>
