@@ -20,19 +20,41 @@ Authors compare their architecture with other machine and deep learning architec
 
 ### 2.1.1 Data Generation
 
-The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox* with different set of signal features such as channel bandwidth, modulation and coding scheme, subcarrier spacing, allocated resource blocks etc. The generated waveforms are transmitted by three transmitter antennas and received by one receiver antenna. Each transmitter antenna is responsible for one signal type and the receiver system collects received signal's raw I/Q values. Then, 512 consequent I/Q pairs are saved together as a segment. There are approximately 100,000 segments are used in training and testing the classifier. The dataset is split into 80% for training and %20 for testing.
+The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox* with different set of signal features such as channel bandwidth, modulation and coding scheme, subcarrier spacing, allocated resource blocks etc. Signal features can be seen in the *Table I*. The generated waveforms are transmitted by three transmitter antennas and received by one receiver antenna. Each transmitter antenna is responsible for one signal type and the receiver system collects received signal's raw I/Q values. Then, 512 consequent I/Q pairs are saved together as a segment. There are approximately 100,000 segments are used in training and testing the classifier. The dataset is split into 80% for training and %20 for testing. Experimental setup of the authors can be seen in *Figure 10*. Also, they introduce additive white Gaussian noise (AWGN) channel model with different SNR values to the data in order to simulate the noise in the wireless environment.
+
 
 <p align="center">
-  <img src="./figures/table1.png" alt="Parameter Options for Waveform Generator" style="width: 25vw"/>
-  <br>Table I from the paper: Parameter Options for Waveform Generator</br>
+<table>
+<tr>
+    <td>
+    <p align="center">
+        <img src="./figures/table1.png" alt="Parameter Options for Waveform Generator" style="width: 30vw"/>
+        <br>Table I from the paper: Parameter Options for Waveform Generator</br>
+    </p>
+    </td>
+    <td>
+    <p align="center">
+        <img src="./figures/figure10.png" alt="Experiment setup used for performance evaluation" style="width: 70vw"/>
+        <br>Figure 10 from the paper: Experiment setup used for performance evaluation</br>
+    </p>
+    </td>
+</tr>
+</table>
+
+### 2.1.2 CNN-LSTM Architecture
+
+Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier Transform) is applied to the segmented sequence of 512 I/Q pairs with Kaisar-Bessel window function and this is fed into convolutional layer, and then pooling layer. Convoluted and pooled input is flattened and further fed into LSTM layer. Output of the LSTM layer is passed to dense layer and then softmax layer.
+
+<p align="center">
+  <img src="./figures/figure2.png" alt="Overview of the proposed FDA-CNN-LSTM classifier" style="width: 80vw"/>
+  <br>Figure 2 from the paper: Overview of the proposed FDA-CNN-LSTM classifier</br>
 </p>
-
-They also introduced additive white Gaussian noise (AWGN) channel model with different SNR values to the data in order to simulate the noise in the wireless communication.
-
 
 ## 2.2. My interpretation 
 
-Explain the parts that were not clearly explained in the original paper and how you interpreted them.
+### 2.2.1 Data Generation
+
+Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creating the dataset and I do not have any equipment for transmission and reception.
 
 # 3. Experiments and results
 
