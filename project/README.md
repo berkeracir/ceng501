@@ -270,7 +270,7 @@ Trained models' classification accuracies can be seen in the figure below. All o
 
 ### **3.3.1.4 With SNR 10 dB**
 
-Trained models' classification accuracies can be seen in the figure below. All of these models are trained with generated WiFi, LTE and 5G data over an AWGN channel with SNR 10 dB noise. With SNR 10 dB, *`CNN-LSTM-S-FDA`* achieves the highest classification accuracy with **`0.9676360225140713`**.
+Trained models' classification accuracies can be seen in the figure below. All of these models are trained with generated WiFi, LTE and 5G data over an AWGN channel with SNR 10 dB noise. With SNR 10 dB, *`CNN-LSTM-S-FDA`* achieves the highest classification accuracy with **`0.9662288930581614`**.
 
 <table style="margin-left:auto; margin-right:auto">
     <tr>
