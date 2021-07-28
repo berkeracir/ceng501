@@ -307,7 +307,7 @@ Trained models' classification accuracies can be seen in the figure below. All o
 
 In this project, the paper *Signal Detection and Classification in Shared Spectrum: A Deep Learning Approach* [1] is implemented and outcomes from the paper is tried to be reproduced. In order to implement signal classifer, WiFi, LTE and 5G waveform data is generated with AWGN channel models and generated data is used for training and testing the models. Signal classifiers with different architectures are implemented and studied in details. *Convolutional Neural Network*, *Long Short-Term Memory* and *combinations of both of these networks *are used as deep neural network architecture. Trained signal classifiers are compared in terms of classification accuracies within the different AWGN channel models.
 
-Authors state that introducing Frequency-Domain Analysis by applying Short-Time Fourier Transform with Kaiser-Bessel window function to input I/Q data increases the model's accuracy and this can be also seen from the result of my implementations.
+Authors state that introducing Frequency-Domain Analysis by applying Short-Time Fourier Transform with Kaiser-Bessel window function to input I/Q data increases the model's accuracy and this can be also seen from the result of my implementations. It is also stated that using I/Q segments together with Frequency-Domain Analysis improves the model's accuracy and this can be also seen in my implementation results.
 
 # **5. References**
 
