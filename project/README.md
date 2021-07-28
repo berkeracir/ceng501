@@ -225,24 +225,89 @@ CNN part contains 9 Convolutional layers, 3 Batch Normalization layer, 3 Max Poo
 
 ## **3.3. Results**
 
-### *3.3.1 Classification Accuracies without Noise*
+### **3.3.1 Classification Accuracies**
 
-Trained models' classification accuracies can be seen below. All of these models are trained with generetaed WiFi, LTE and 5G data without noise. Applying FDA on input segment improves the model's classification performances. Usually, FDA without segment as an input results in better accuracy compared to only segment or FDA with segment as an input. *`CNN-S-FDA`* achieves the highest classification accuracy with **`0.9730700179533214`**.
+The results below shows that applying FDA on a segment and using it as input generally improves the models' classification performances. For some cases, using FDA together with the input segment also increases the classification accuracy.
+
+### **3.3.1.1 Without Noise**
+
+Trained models' classification accuracies can be seen in the figure below. All of these models are trained with generated WiFi, LTE and 5G data without any noise. Without noise, *`CNN-S-FDA`* achieves the highest classification accuracy with **`0.9730700179533214`**.
 
 <table style="margin-left:auto; margin-right:auto">
     <tr>
         <td><p align="center">
-            <img src="./figures/accuracies_without_noise.png" alt="Classification Accuracies by Architecture and Input Data" style="width: 80vw"/>
-            <br>Figure: Classification Accuracies by Architecture and Input Data</br>
+            <img src="./figures/accuracies_without_noise.png" alt="Classification Accuracies without Noise by Architecture and Input Data" style="width: 80vw"/>
+            <br>Figure: Classification Accuracies without Noise by Architecture and Input Data</br>
         </p></td>
     </tr>
 </table>
 
+### **3.3.1.2 With SNR 20 dB**
 
+Trained models' classification accuracies can be seen in the figure below. All of these models are trained with generated WiFi, LTE and 5G data over an AWGN channel with SNR 20 dB noise. With SNR 20 dB, *`CNN-S-FDA`* achieves the highest classification accuracy with **`0.9657598499061913`**.
+
+<table style="margin-left:auto; margin-right:auto">
+    <tr>
+        <td><p align="center">
+            <img src="./figures/accuracies_snr20.png" alt="Classification Accuracies with SNR 20 dB by Architecture and Input Data" style="width: 80vw"/>
+            <br>Figure: Classification Accuracies with SNR 20 dB by Architecture and Input Data</br>
+        </p></td>
+    </tr>
+</table>
+
+### **3.3.1.3 With SNR 15 dB**
+
+Trained models' classification accuracies can be seen in the figure below. All of these models are trained with generated WiFi, LTE and 5G data over an AWGN channel with SNR 15 dB noise. With SNR 15 dB, *`CNN-LSTM-S-FDA`* achieves the highest classification accuracy with **`0.9676360225140713`**.
+
+<table style="margin-left:auto; margin-right:auto">
+    <tr>
+        <td><p align="center">
+            <img src="./figures/accuracies_snr15.png" alt="Classification Accuracies with SNR 15 dB by Architecture and Input Data" style="width: 80vw"/>
+            <br>Figure: Classification Accuracies with SNR 15 dB by Architecture and Input Data</br>
+        </p></td>
+    </tr>
+</table>
+
+### **3.3.1.4 With SNR 10 dB**
+
+Trained models' classification accuracies can be seen in the figure below. All of these models are trained with generated WiFi, LTE and 5G data over an AWGN channel with SNR 10 dB noise. With SNR 10 dB, *`CNN-LSTM-S-FDA`* achieves the highest classification accuracy with **`0.9676360225140713`**.
+
+<table style="margin-left:auto; margin-right:auto">
+    <tr>
+        <td><p align="center">
+            <img src="./figures/accuracies_snr10.png" alt="Classification Accuracies with SNR 10 dB by Architecture and Input Data" style="width: 80vw"/>
+            <br>Figure: Classification Accuracies with SNR 10 dB by Architecture and Input Data</br>
+        </p></td>
+    </tr>
+</table>
+
+### **3.3.2 Classification Accuracies vs. SNR over an AWGN channel models**
+
+<table style="margin-left:auto; margin-right:auto">
+    <tr>
+        <td><p align="center">
+            <img src="./figures/figure4.png" alt="Classification performance comparison under AWGN" width="400"/>
+            <br>Figure 4 from the paper: Classification performance comparison under AWGN</br>
+        </p></td>
+    </tr>
+</table>
+
+### **3.3.2 Confusion Matrices of the Best Models**
+
+<table style="margin-left:auto; margin-right:auto">
+    <tr>
+        <td><p align="center">
+            <img src="./figures/figure8.png" alt="Classification performance comparison under AWGN" width="700"/>
+            <br>Figure 8 from the paper: Confusion matrices for superimposed signals with FDA</br>
+        </p></td>
+    </tr>
+</table>
 
 # **4. Conclusion**
 
-Discuss the paper in relation to the results in the paper and your results.
+In this project, the paper *Signal Detection and Classification in Shared Spectrum: A Deep Learning Approach* [1] is implemented and outcomes from the paper is tried to be reproduced. In order to implement signal classifer, WiFi, LTE and 5G waveform data is generated with AWGN channel models and generated data is used for training and testing the models. Signal classifiers with different architectures are implemented and studied in details. *Convolutional Neural Network*, *Long Short-Term Memory* and *combinations of both of these networks *are used as deep neural network architecture. Trained signal classifiers are compared in terms of classification accuracies within the different AWGN channel models.
+
+Authors state that introducing Frequency-Domain Analysis by applying Short-Time Fourier Transform with Kaiser-Bessel window function to input I/Q data increases the model's accuracy and this can be also seen from the result of my implementations.
 
 # **5. References**
 
