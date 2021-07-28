@@ -286,7 +286,7 @@ Trained models' classification accuracies can be seen in the figure below. All o
 <table style="margin-left:auto; margin-right:auto">
     <tr>
         <td><p align="center">
-            <img src="./figures/figure4.png" alt="Classification performance comparison under AWGN" width="800"/>
+            <img src="./figures/figure4.png" alt="Classification performance comparison under AWGN" width="600"/>
             <br>Figure 4 from the paper: Classification performance comparison under AWGN</br>
         </p></td>
     </tr>
