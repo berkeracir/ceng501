@@ -283,6 +283,8 @@ Trained models' classification accuracies can be seen in the figure below. All o
 
 ### **3.3.2 Classification Accuracies vs. SNR over an AWGN channel models**
 
+Authors' classification performances with respect to SNR can be seen in *Figure 4*. Proposed architecture, combination of CNN and LSTM outperforms other techniques in almost every noise levels. My implementations' performances can be seen in figure below. Even though, I only trained and tested the models with SNR values 10, 15 and 20 dB, increase in the noise (i.e. decrease in the SNR value) affects the model's outcomes as expected. As noise is increased, the structure of the signal is distorted. When the noise is too much, the signal is distorted well-beyond the being meaningful. That's the reason the authors' accuracies are around the 10% as the the received signal is similar to the noise itself.
+
 <table style="margin-left:auto; margin-right:auto">
     <tr>
         <td><p align="center">
@@ -290,15 +292,46 @@ Trained models' classification accuracies can be seen in the figure below. All o
             <br>Figure 4 from the paper: Classification performance comparison under AWGN</br>
         </p></td>
     </tr>
+    <tr>
+        <td><p align="center">
+            <img src="./figures/accuracies_vs_noise.png" alt="Comparison of classification accuracies under AWGN"/>
+            <br>Figure: Comparison of classification accuracies under AWGN</br>
+        </p></td>
+    </tr>
+    <tr>
+        <td><p align="center">
+            <br>Figure: Confusion matrices of the most accurate CNN, LSTM and CNN-LSTM models with SNR 20 dB from my implementation.</br>
+        </p></td>
+    </tr>
 </table>
+
+My model is trying to decide whether is input data belongs to WiFi, LTE or 5G signal type. However, in the paper, their model is trying to classify a signal into one of the 7 different signal types. I believe this difference is the reason that my accuracies are higher because classification task that I have implemented is much more simpler.
 
 ### **3.3.2 Confusion Matrices of the Best Models**
 
+Confusion matrices of authors' CNN, LSTM and CNN-LSTM models can be seen in *Figure 8*.
+
+Even though, it is not clearly stated that models from which noise level are used in the confusion matrices in the paper, my results are from noise level of SNR 20 dB. Confusion matrices from my implementations can be seen in figures below. I picked my *`CNN-S-FDA`*, *`LSTM`* and *`CNN-LSTM-S`* models as they have the highest accuracies among their counterpart architectures in that noise level.
+
 <table style="margin-left:auto; margin-right:auto">
     <tr>
-        <td><p align="center">
+        <td colspan="3"><p align="center">
             <img src="./figures/figure8.png" alt="Classification performance comparison under AWGN">
             <br>Figure 8 from the paper: Confusion matrices for superimposed signals with FDA</br>
+        </p></td>
+    </tr>
+    <tr>
+        <td><p align="center">
+            <img src="./figures/cm_cnn_s_fda_snr20.png" alt="Confusion matrix of CNN-S-FDA model with SNR 20 dB">
+            <br>(a) CNN-S-FDA</br>
+        </p></td>
+        <td><p align="center">
+            <img src="./figures/cm_lstm_snr20.png" alt="Confusion matrix of LSTM model with SNR 20 dB">
+            <br>(b) LSTM</br>
+        </p></td>
+        <td><p align="center">
+            <img src="./figures/cm_cnn_lstm_s_snr20.png" alt="Confusion matrix of CNN-LSTM-S model with SNR 20 dB">
+            <br>(c) CNN-LSTM-S</br>
         </p></td>
     </tr>
 </table>
