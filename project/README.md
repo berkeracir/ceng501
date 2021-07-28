@@ -1,12 +1,12 @@
-# Signal Detection and Classification in Shared Spectrum: A Deep Learning Approach
+# **Signal Detection and Classification in Shared Spectrum: A Deep Learning Approach**
 
 This readme file is an outcome of the [CENG501 (Spring 2021)](http://kovan.ceng.metu.edu.tr/~sinan/DL/) project for reproducing a paper without an implementation. See [CENG501 (Spring 2021) Project List](https://github.com/sinankalkan/CENG501-Spring2021) for a complete list of all paper reproduction projects.
 
-# 1. Introduction
+# **1. Introduction**
 
 In this project, signal classifier with the combination of Convolutional and Recurrent Neural Networks as described in the paper[1] is implemented. The paper is accepted for publishing in [IEEE INFOCOM 2021 Main Conference](https://infocom2021.ieee-infocom.org/accepted-paper-list-main-conference).
 
-## 1.1. Paper summary
+## **1.1. Paper summary**
 
 Authors of the paper develop a deep neural network for classification of coexisting signal types such as IEEE802.11 (WiFi), LTE (Long Term Evolution) and 5G-NR (5G New Radio). Also, this network works on directly received signal's I/Q (In-Phase and Quadrature) samples meaning that receiver side does not have to decode the received signal in order to detect its type. The proposed architecture combines both CNN and RNN and uses segment of I/Q samples for training. It is trained in both simulation environment and experimental environment with the trasmitter and receiver hardware. Their results show that proposed architecture can achieve accurate classification in both environments.
 
@@ -14,11 +14,11 @@ WiFi, LTE and 5G signals can coexist in the shared spectrum (5-6 GHz) so assesme
 
 Authors compare their architecture with other machine and deep learning architectures such as SVM (Support Vector Machine), RF (Random Forests), CNN (Convolutional Neural Networks) and LSTM (Long Short-Term Memory) and the proposed architecture shows better performance in the classification task. The authors also try to improve the architecture's accuracy by introducing Frequency-Domain Analysis (FDA) into the input segment. They exhibit extensive analysis on the impact of FDA, RNN layer, and segment length. Also, they show their detailed analysis on SNR (Signal-to-Noise Ratio) and receiver antenna gains.
 
-# 2. The method and my interpretation
+# **2. The method and my interpretation**
 
-## 2.1. The original method
+## **2.1. The original method**
 
-### 2.1.1 Data Generation
+### **2.1.1 Data Generation**
 
 The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox* with different set of signal features such as channel bandwidth, modulation and coding scheme, subcarrier spacing, allocated resource blocks etc. Signal features can be seen in the *Table I*. The generated waveforms are transmitted by three transmitter antennas and received by one receiver antenna. Each transmitter antenna is responsible for one signal type and the receiver system collects received signal's raw I/Q values. Then, 512 consequent I/Q pairs are saved together as a segment. There are approximately 100,000 segments are used in training and testing the classifier. The dataset is split into 80% for training and %20 for testing. Experimental setup of the authors can be seen in *Figure 10*. Also, they introduce additive white Gaussian noise (AWGN) channel model with different SNR values to the data in order to simulate the noise in the wireless environment.
 
@@ -35,7 +35,7 @@ The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox*
     </tr>
 </table>
 
-### 2.1.2 CNN-LSTM Architecture
+### **2.1.2 CNN-LSTM Architecture**
 
 Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier Transform) is applied to the segmented sequence of 512 I/Q pairs with Kaiser-Bessel window function and this is fed into convolutional layer, and then pooling layer. Convoluted and pooled input is flattened and further fed into LSTM layer. Output of the LSTM layer is passed to dense layer and then softmax layer. Cross Entropy is used as loss function.
 
@@ -63,13 +63,13 @@ STFT with Kaiser-Bessel window function is applied to the input segmsents with 5
 
 One of the unmentioned information is about input size and this was one of the hardest part of this project. Generated I/Q data is a complex number; therefore, its real part (I) and imaginary part (Q) has to be split such that one segment is in the shape of `(512, 2)` or `(2, 512)`.
 
-## 2.2. My interpretation 
+## **2.2. My interpretation **
 
-### 2.2.1 Data Generation
+### **2.2.1 Data Generation**
 
 Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creating the dataset by transmitting and receiving WiFi, LTE and 5G waveforms. They combined two or three simultaneous transmissions to create coexisting signal types such as WiFi+LTE, WiFi+5G, LTE+5G and WiFi+LTE+5G. Since, I do not have any equipment for waveform transmission and reception, I planned to generate data directly within the *MATLAB* and generate pure signals (only WiFi, LTE and 5G signals without coexisting).
 
-### 2.2.2 CNN-LSTM Architecture
+### **2.2.2 CNN-LSTM Architecture**
 
 Since there are information about only activation function (SELU) and loss function (Cross Entropy), I had to improvise the network's design. In the paper, the proposed architecture is compared against CNN and LSTM models, so I planned to start implementing from CNN and LSTM models and then combining both CNN and LSTM layers.
 
@@ -99,11 +99,11 @@ In this project, my goal was to do the followings in my implementations and comp
 * Use segment, FDA and FDA with segment as an input
 * Train with noisy data (dataset generated with different SNR values in AWGN channel model)
 
-# 3. Experiments and results
+# **3. Experiments and results**
 
-## 3.1. Experimental setup
+## **3.1. Experimental setup**
 
-### 3.1.1 Dataset Generation
+### **3.1.1 Dataset Generation**
 
 I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* release to generate waveforms with AWGN channel model. Waveforms are generated with every possible waveform combinations (which might be more extensive than the project's waveform parameters). For generating WiFi and LTE data, MATLAB script is written. I tried to write a similar script for generating 5G data, but *5G Toolbox* interface was not mature enough as *WLAN and LTE Toolboxes* because 5G is much newer technology compared to WiFi and LTE. Therefore, I generated the 5G data from the 5G Toolbox GUI and saved waveform variables into files. Then, 5G waveform variables was loaded from the files and written into dataset with a *MATLAB* script. It is said that, in the forums of *MathWorks*, *5G Toolbox* interface will be updated in *MATLAB R2021b* release so that script similar to *WiFi* and *LTE* waveform generator can be written for *5G* data generation.
 
@@ -168,7 +168,7 @@ Generated datasets with WiFi, LTE and 5G can be downloaded from my Google Drive:
 
 Also, manually saved MATLAB variables can be downloaded [here](https://drive.google.com/file/d/1Ap5mfu7WCsynA9--izgBzu1S3A1oAoV_/view?usp=sharing).
 
-### 3.1.2 Model Architecture
+### **3.1.2 Model Architecture**
 
 Each model's parameters differs as input data shape varies. There are similarities in the namings of notebooks:
 
@@ -191,11 +191,11 @@ In the paper, the authors uses Softmax layer but I simply used output of last De
 
 Training hyperparameters and model designs are selected through tuning phase.
 
-#### 3.1.2.1 Fully-Connected Neural Networks (FCNN)
+#### **3.1.2.1 Fully-Connected Neural Networks (FCNN)**
 
 There are 3 different FCNN models: *`FCNN`*, *`FCNN-FDA`*, *`FCN-FDA+`* and they contain only two Dense layers.
 
-#### 3.1.2.2 Convolutional Neural Networks (CNN)
+#### **3.1.2.2 Convolutional Neural Networks (CNN)**
 
 There are 8 different CNN models: *`CNN`*, *`CNN-1D`*, *`CNN-W`*, *`CNN-FDA`*, *`CNN-FDA+`*, *`CNN-S`*, *`CNN-S-FDA`*, *`CNN-S-FDA+`*. All of these models contain 9 Convolutional layers, 3 Batch Normalization layer, 3 Max Pooling layer and two (or three) Dense layers. Every 3 Convolutional layers are followed by one Batch Normalization and one Max Pooling layers. Output of the last Max Pooling layer is flatten for the Dense layer.
 
@@ -203,13 +203,13 @@ There are 8 different CNN models: *`CNN`*, *`CNN-1D`*, *`CNN-W`*, *`CNN-FDA`*, *
 
 *`CNN-W`* is the specialized case of *`CNN-S`* with *L* value is equal to 1. 1D Convolutional, Batch Normalization and Max Pooling layers are used in *`CNN-1D`* such that input shape is `(B, 2, 512)` where *B* is the batch size.
 
-#### 3.1.2.3 Long Short-Term Memory (LSTM)
+#### **3.1.2.3 Long Short-Term Memory (LSTM)**
 
 There are 6 different LSTM models: *`LSTM`*, *`LSTM-FDA`*, *`LSTM-FDA+`*, *`LSTM-S`*, *`LSTM-S-FDA`*, *`LSTM-S-FDA+`*. Every LSTM models contain one LSTM layer with 32 hidden neurons followed by Dense layer.
 
 **S** in LSTM model means that I and Q values are flattened to be used in input dimension and 512 (I/Q pairs) is used in sequence length. For example, input shape of *`LSTM-FDA+`* is `(B, L, 4096)` while input shape of *`LSTM-S-FDA+`* is `(B, 512, 8)` where *B* is the batch size and *L* is the sequence length.
 
-#### 3.1.2.3 Convolutional Neural Network with Long Short-Term Memory (CNN-LSTM)
+#### **3.1.2.3 Convolutional Neural Network with Long Short-Term Memory (CNN-LSTM)**
 
 There are 6 different CNN-LSTM models: *`CNN-LSTM`*, *`CNN-LSTM-FDA`*, *`CNN-LSTM-FDA+`*, *`CNN-LSTM-S`*, *`CNN-LSTM-S-FDA`*, *`CNN-LSTM-S-FDA+`*. Same CNN and LSTM layers are used in CNN-LSTM model.
 
@@ -219,24 +219,24 @@ CNN part contains 9 Convolutional layers, 3 Batch Normalization layer, 3 Max Poo
 
 * Input shape for *`CNN-LSTM-S`* is `(B, L, 512, 2)` and the input is converted into the shape of `(B, L, I)` by CNN layers where `L` is `4` and `I` is `1024`. Then, it is passed to the LSTM layer and then to the Dense layer.
 
-## 3.2. Running the code
+## **3.2. Running the code**
 
 **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO**
 
-## 3.3. Results
+## **3.3. Results**
 
 Present your results and compare them to the original paper. Please number your figures & tables as if this is a paper.
 
-# 4. Conclusion
+# **4. Conclusion**
 
 Discuss the paper in relation to the results in the paper and your results.
 
-# 5. References
+# **5. References**
 
 [1]: [Zhang, W., Feng, M., Krunz, M., & Abyaneh, A. (2020). Signal Detection and Classification in Shared Spectrum: A Deep Learning Approach. *IEEE INFOCOM 2021*.](http://wireless.ece.arizona.edu/sites/default/files/Infocom_2021_wenhan.pdf)
 
 [2]: [Klambauer, G., Unterthiner, T., Mayr, A. & Hochreiter, S. (2017). Self-Normalizing Neural Networks.](https://arxiv.org/abs/1706.02515)
 
-# Contact
+# **Contact**
 
 Berker Acır - berker.acir@metu.edu.tr, berkeracir159@gmail.com
