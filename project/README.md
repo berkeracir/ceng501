@@ -4,7 +4,7 @@ This readme file is an outcome of the [CENG501 (Spring 2021)](http://kovan.ceng.
 
 # 1. Introduction
 
-In this project, implementation of a signal classifier with the combination of Convolutional and Recurrent Neural Networks as described in the paper[1] is tried. The paper is accepted for publishing in [IEEE INFOCOM 2021 Main Conference](https://infocom2021.ieee-infocom.org/accepted-paper-list-main-conference).
+In this project, signal classifier with the combination of Convolutional and Recurrent Neural Networks as described in the paper[1] is implemented. The paper is accepted for publishing in [IEEE INFOCOM 2021 Main Conference](https://infocom2021.ieee-infocom.org/accepted-paper-list-main-conference).
 
 ## 1.1. Paper summary
 
@@ -37,7 +37,7 @@ The wavefroms are generated with *MATLAB Communication Toolbox* and *5G Toolbox*
 
 ### 2.1.2 CNN-LSTM Architecture
 
-Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier Transform) is applied to the segmented sequence of 512 I/Q pairs with Kaiser-Bessel window function and this is fed into convolutional layer, and then pooling layer. Convoluted and pooled input is flattened and further fed into LSTM layer. Output of the LSTM layer is passed to dense layer and then softmax layer.
+Proposed architecture can be seen from the *Figure 2*. STFT (Short-Time Fourier Transform) is applied to the segmented sequence of 512 I/Q pairs with Kaiser-Bessel window function and this is fed into convolutional layer, and then pooling layer. Convoluted and pooled input is flattened and further fed into LSTM layer. Output of the LSTM layer is passed to dense layer and then softmax layer. Cross Entropy is used as loss function.
 
 <table style="margin-left:auto; margin-right:auto">
     <tr>
@@ -59,35 +59,35 @@ In the paper, there are no information about the depth of the network, number of
     </tr>
 </table>
 
-STFT with Kaiser-Bessel window function is applied to the input segmsents with 512 I/Q pairs; however, there are no information about the window length, shape factor (β) and side-lobe attenuation (α) values. I/Q samples are obtained from the time-domain, and its frequency-domain information is obtained by applying STFT. In the paper, FDA improves the model's performance.
+STFT with Kaiser-Bessel window function is applied to the input segmsents with 512 I/Q pairs; however, there are no information about the window length, shape factor (β) and side-lobe attenuation (α) values of Kaiser-Bessel window function. I/Q samples are in time-domain, and its frequency-domain information is obtained by applying STFT. In the paper, applying FDA to input shows increase in the model's performance.
 
-One of the unmentioned information is about input size and this was one of the hardest part of this project. Generated I/Q data is a complex number; therefore, it's real part (I) and imaginary part (Q) has to be split such that one segment is in the shape of `(512, 2)` or `(2, 512)`.
+One of the unmentioned information is about input size and this was one of the hardest part of this project. Generated I/Q data is a complex number; therefore, its real part (I) and imaginary part (Q) has to be split such that one segment is in the shape of `(512, 2)` or `(2, 512)`.
 
 ## 2.2. My interpretation 
 
 ### 2.2.1 Data Generation
 
-Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creating the dataset by transmitting and receiving WiFi, LTE and 5G waveforms. Since, I do not have any equipment for waveform transmission and reception, I planned to generate data directly within the *MATLAB* and generate pure signals (only WiFi, LTE and 5G signals without coexisting).
+Authors are used hardware (three NI USRP-2921s and one NI USRP-2944R) for creating the dataset by transmitting and receiving WiFi, LTE and 5G waveforms. They combined two or three simultaneous transmissions to create coexisting signal types such as WiFi+LTE, WiFi+5G, LTE+5G and WiFi+LTE+5G. Since, I do not have any equipment for waveform transmission and reception, I planned to generate data directly within the *MATLAB* and generate pure signals (only WiFi, LTE and 5G signals without coexisting).
 
 ### 2.2.2 CNN-LSTM Architecture
 
-Since there are information about only activation function which is SELU, I had to improvised the network's design. In the paper, the proposed architecture is compared against CNN and LSTM models, so I planned to start from implementing CNN and LSTM models and then combining both CNN and LSTM.
+Since there are information about only activation function (SELU) and loss function (Cross Entropy), I had to improvise the network's design. In the paper, the proposed architecture is compared against CNN and LSTM models, so I planned to start implementing from CNN and LSTM models and then combining both CNN and LSTM layers.
 
-As I mentioned, input shape was the puzzling part of this project since the I/Q value is a complex number. For example, a batch of segments with the shape of `(B, 512)` with complex numbers can be reshaped into to the following shapes before fed into to the CNN or LSTM layer:
+As I mentioned, input shape was the puzzling part of this project since the I/Q value is a complex number. For example, a batch of segments with the shape of `(B, 512)` with complex numbers can be reshaped into to the following shapes before fed into to the CNN or LSTM layers:
 
 * `(B, 1, 512, 2)`: Real (I) and imaginary (Q) values are in the width dimension. (*CNN*)
 * `(B, 2, 512, 1)`: Real (I) and imaginary (Q) values are in the channel dimension. (*CNN*)
-* `(B', L, 512, 2)`: *L* different segments are used in the channel dimension where *L* is the sequence number. Real (I) and imaginary (Q) values are in the width dimension. (*CNN*)
-* `(B', L, 1024)`: *L* different segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened to input dimension. (*LSTM*)
-* `(B, 512, 2)`: Segment size is used as sequence number. Real (I) and imaginary (Q) value of a I/Q pair is flattened to input dimension. (*LSTM*)
+* `(B', L, 512, 2)`: *L* different segments are used in the channel dimension where *L* is the sequence length. Real (I) and imaginary (Q) values are in the width dimension. (*CNN*)
+* `(B', L, 1024)`: *L* different segments are used where *L* is the sequence length. Real (I) and imaginary (Q) values are flattened to input dimension. (*LSTM*)
+* `(B, 512, 2)`: Segment size is used as sequence length. Real (I) and imaginary (Q) value of an I/Q pair is flattened to input dimension. (*LSTM*)
 
-But what about STFT of the segments? STFT of a batch of segments is in the shape of `(B, 512, 3)` with complex values. Therefore, it can be reshaped into to the following shapes before passed into the CNN or LSTM layer:
+But what about STFT of the segments? STFT of a batch of segments is in the shape of `(B, 512, 3)` with complex values. Therefore, it can be reshaped into to the following shapes before passed into the CNN or LSTM layers:
 
 * `(B, 3, 512, 2)`: Real (I) and imaginary (Q) values are in the width dimension. (*CNN*)
 * `(B, 2, 512, 3)`: Real (I) and imaginary (Q) values are in the channel dimension. (*CNN*)
-* `(B', L, 512, 6)`: *L* different STFT of segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened into the width dimension. (*CNN*)
-* `(B', L, 3072)`: *L* different STFT of segments are used where *L* is the sequence number. Real (I) and imaginary (Q) values are flattened to input dimension. (*LSTM*)
-* `(B, 512, 6)`: Segment size is used as sequence number. Real (I) and imaginary (Q) values STFT of a segment are flattened to input dimension. (*LSTM*)
+* `(B', L, 512, 6)`: *L* different STFT of segments are used where *L* is the sequence length. Real (I) and imaginary (Q) values are flattened into the width dimension. (*CNN*)
+* `(B', L, 3072)`: *L* different STFT of segments are used where *L* is the sequence length. Real (I) and imaginary (Q) values are flattened to input dimension. (*LSTM*)
+* `(B, 512, 6)`: Segment size is used as sequence length. Real (I) and imaginary (Q) values STFT of a segment are flattened to input dimension. (*LSTM*)
 
 In order to decide which shape is better in terms of classification performance, I planned to compare CNN, LSTM and CNN-LSTM architectures with different input shapes.
 
@@ -105,7 +105,7 @@ In this project, my goal was to do the followings in my implementations and comp
 
 ### 3.1.1 Dataset Generation
 
-I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* release to generate waveforms with AWGN channel model. Waveforms are generated with every possible waveform combinations (which might be more extensive than the project's waveform parameters). For generating WiFi and LTE data, MATLAB script is written. I tried to write a similar script for generating 5G data, but *5G Toolbox* interface was not mature enough as *WLAN and LTE Toolboxes* as 5G is much newer technology. Therefore, I generated the 5G data from the 5G Toolbox GUI and saved waveform variables into files. Then, 5G waveform variables was loaded from the files and written into dataset with a *MATLAB* script. It is said that, in the forums of *MathWorks*, *5G Toolbox* interface will be updated in *MATLAB R2021b* release so that script similar to *WiFi* and *LTE* waveform generator can be written for *5G* data generation.
+I used *WLAN Toolbox*, *LTE Toolbox* and *5G Toolbox* in *MATLAB R2021a* release to generate waveforms with AWGN channel model. Waveforms are generated with every possible waveform combinations (which might be more extensive than the project's waveform parameters). For generating WiFi and LTE data, MATLAB script is written. I tried to write a similar script for generating 5G data, but *5G Toolbox* interface was not mature enough as *WLAN and LTE Toolboxes* because 5G is much newer technology compared to WiFi and LTE. Therefore, I generated the 5G data from the 5G Toolbox GUI and saved waveform variables into files. Then, 5G waveform variables was loaded from the files and written into dataset with a *MATLAB* script. It is said that, in the forums of *MathWorks*, *5G Toolbox* interface will be updated in *MATLAB R2021b* release so that script similar to *WiFi* and *LTE* waveform generator can be written for *5G* data generation.
 
 For the project, approximately 45,000 segments (512 I/Q pairs) are generated: 14,410 WiFi, 13,972 LTE and 16,170 5G segments. The number of generated segments can be easily increased. Visualization of 256 I/Q pairs can be seen below.
 
@@ -174,7 +174,7 @@ Each model's parameters differs as input data shape varies. There are similariti
 
 * ***FDA*** means that STFT of segment is used as input to the model.
 * ***FDA+*** means that STFT of segment is used together with segment data as input to the model.
-* ***S*** means that I and Q values are used in width dimension in CNN model instead of channel dimension. In LSTM model, I and Q values are used directly in input dimension.
+* ***S*** means that I and Q values are used in width dimension in CNN model instead of channel dimension and different. In LSTM model, I and Q values are used directly in input dimension.
 
 For the training of all models, following parameters were used:
 
@@ -187,21 +187,41 @@ For the training of all models, following parameters were used:
 
 In the paper, the authors uses Softmax layer but I simply used output of last Dense layer in Cross Entropy loss function which is similar to using Softmax layer. The proposed architecture does not contain Batch Normalization layers in CNN but I used them before Max Pooling layers.
 
+**Sequence length (*L*)** is selected as `4` CNN, LSTM and CNN-LSTM models.
+
+Training hyperparameters and model designs are selected through tuning phase.
+
 #### 3.1.2.1 Fully-Connected Neural Networks (FCNN)
 
-There are 3 different FCNN models: *FCNN*, *FCNN-FDA*, *FCN-FDA+* and they contain only two Dense layers.
+There are 3 different FCNN models: *`FCNN`*, *`FCNN-FDA`*, *`FCN-FDA+`* and they contain only two Dense layers.
 
 #### 3.1.2.2 Convolutional Neural Networks (CNN)
 
-There are 8 different CNN models: *CNN*, *CNN-1D*, *CNN-W*, *CNN-FDA*, *CNN-FDA+*, *CNN-S*, *CNN-S-FDA*, *CNN-S-FDA+*. All of these models contain 9 Convolutional layers, 3 Batch Normalization layer, 3 Max Pooling layer and two (or three) Dense layers. Every 3 Convolutional layers are followed by one Batch Normalization and one Max Pooling layers. Output of the last Max Pooling layer is flatten for the Dense layer.
+There are 8 different CNN models: *`CNN`*, *`CNN-1D`*, *`CNN-W`*, *`CNN-FDA`*, *`CNN-FDA+`*, *`CNN-S`*, *`CNN-S-FDA`*, *`CNN-S-FDA+`*. All of these models contain 9 Convolutional layers, 3 Batch Normalization layer, 3 Max Pooling layer and two (or three) Dense layers. Every 3 Convolutional layers are followed by one Batch Normalization and one Max Pooling layers. Output of the last Max Pooling layer is flatten for the Dense layer.
+
+**S** in CNN model means that I and Q values are used in width dimension and different segments are combined as a sequence in channel dimension. For example, input shape of *`CNN-FDA`* is `(B, 2, 512, 3)` while input shape of *`CNN-S-FDA`* is `(B, L, 512, 2)` where *B* is the batch size and *L* is the sequence length. 
+
+*`CNN-W`* is the specialized case of *`CNN-S`* with *L* value is equal to 1. 1D Convolutional, Batch Normalization and Max Pooling layers are used in *`CNN-1D`* such that input shape is `(B, 2, 512)` where *B* is the batch size.
 
 #### 3.1.2.3 Long Short-Term Memory (LSTM)
 
-There are 6 different LSTM models: *LSTM*, *LSTM-FDA*, *LSTM-FDA+*, *LSTM-S*, *LSTM-S-FDA*, *LSTM-S-FDA+*. Every LSTM models contain one LSTM layer with 32 hidden neurons followed by Dense layer.
+There are 6 different LSTM models: *`LSTM`*, *`LSTM-FDA`*, *`LSTM-FDA+`*, *`LSTM-S`*, *`LSTM-S-FDA`*, *`LSTM-S-FDA+`*. Every LSTM models contain one LSTM layer with 32 hidden neurons followed by Dense layer.
+
+**S** in LSTM model means that I and Q values are flattened to be used in input dimension and 512 (I/Q pairs) is used in sequence length. For example, input shape of *`LSTM-FDA+`* is `(B, L, 4096)` while input shape of *`LSTM-S-FDA+`* is `(B, 512, 8)` where *B* is the batch size and *L* is the sequence length.
+
+#### 3.1.2.3 Convolutional Neural Network with Long Short-Term Memory (CNN-LSTM)
+
+There are 6 different CNN-LSTM models: *`CNN-LSTM`*, *`CNN-LSTM-FDA`*, *`CNN-LSTM-FDA+`*, *`CNN-LSTM-S`*, *`CNN-LSTM-S-FDA`*, *`CNN-LSTM-S-FDA+`*. Same CNN and LSTM layers are used in CNN-LSTM model.
+
+CNN part contains 9 Convolutional layers, 3 Batch Normalization layer, 3 Max Pooling layer where every 3 Convolutional layers are followed by one Batch Normalization and one Max Pooling layers. LSTM part contains one LSTM layer with 32 hidden neurons followed by Dense layer.
+
+* Input shape for *`CNN-LSTM`* is `(B, 2, 512, 1)` and the input is converted into the shape of `(B, L, I)` by CNN layers where `L` is `4` and `I` is `128`. Then, it is passed to the LSTM layer and then to the Dense layer.
+
+* Input shape for *`CNN-LSTM-S`* is `(B, L, 512, 2)` and the input is converted into the shape of `(B, L, I)` by CNN layers where `L` is `4` and `I` is `1024`. Then, it is passed to the LSTM layer and then to the Dense layer.
 
 ## 3.2. Running the code
 
-Explain your code & directory structure and how other people can run it.
+**TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO**
 
 ## 3.3. Results
 
