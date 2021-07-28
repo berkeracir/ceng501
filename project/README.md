@@ -154,7 +154,7 @@ For the project, approximately 45,000 segments (512 I/Q pairs) are generated: 14
     </tr>
     <tr valign="top">
         <td colspan="3"><p align="center">
-            Generated Data's Visualizations
+            Figure: Generated Data's Visualizations
         </p></td>
     </tr>
 </table>
@@ -225,7 +225,20 @@ CNN part contains 9 Convolutional layers, 3 Batch Normalization layer, 3 Max Poo
 
 ## **3.3. Results**
 
-Present your results and compare them to the original paper. Please number your figures & tables as if this is a paper.
+### *3.3.1 Classification Accuracies without Noise*
+
+Trained models' classification accuracies can be seen below. All of these models are trained with generetaed WiFi, LTE and 5G data without noise. Applying FDA on input segment improves the model's classification performances. Usually, FDA without segment as input results in better accuracy compared to only segment or FDA with segment as input. *`CNN-S-FDA`* achieves the highest classification accuracy with **`0.9730700179533214`**.
+
+<table style="margin-left:auto; margin-right:auto">
+    <tr>
+        <td><p align="center">
+            <img src="./figures/accuracies_without_noise.png" alt="Classification Accuracies by Architecture and Input Data" style="width: 80vw"/>
+            <br>Figure: Classification Accuracies by Architecture and Input Data</br>
+        </p></td>
+    </tr>
+</table>
+
+
 
 # **4. Conclusion**
 
