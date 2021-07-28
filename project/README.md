@@ -221,7 +221,37 @@ CNN part contains 9 Convolutional layers, 3 Batch Normalization layer, 3 Max Poo
 
 ## **3.2. Running the code**
 
-**TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO** **TODO**
+My project has the following file and folder structure:
+
+```
+project_Acir
+│─── cnn/
+│─── cnn-lstm/
+│─── data_generation/
+│    │─ lte_waveform_generator.m
+│    │─ nr5g_generator.m
+│    │─ nr5g_wave_generator.m
+│    │─ wifi_waveform_generator.m
+│─── fcnn/
+│─── figures/
+│─── lstm/
+│─── snr/
+│    │─── 10_dB/
+│    │─── 15_dB/
+│    │─── 20_dB/
+│  README.md
+│  Data_Visualization.ipynb
+│  Results_(Bar_Graphs).ipynb
+│  Results_(Line_Graphs).ipynb
+```
+
+* *cnn*, *cnn-lstm*, *fcnn*, *lstm*, *snr/10_dB/*, *snr/15_dB/* and *snr/20_dB/* folders contain notebook files of the models. Every notebook file is almost same with the minor changes such as input pre-processing, model definition parts etc.
+* *data_generation* folder contains *MATLAB* scripts for waveform generation. However, *nr5g_generator.m* script does not directly generate waveform, it is used for reading *MATLAB* variables from files and writing the contents into files with the wanted form.
+* *figures* folder contain figures used in this report.
+* *Data_Visualization.ipynb* notebook is used for data visualization whose plots are used in this report.
+* *Results_(Bar_Graphs).ipynb* and *Results_(Line_Graphs).ipynb* notebooks are used for plotting results of the models.
+
+Most of the code files are notebooks; therefore, they can also be reached from this [link to my Google Drive](https://drive.google.com/drive/folders/16ZTRUde65ESYLY-3VP0eJ5AwXLKH6Zaa?usp=sharing) which also contains generated waveforms and saved *MATLAB* variables. I created and run the notebooks with *Google Colaboratory*. *MATLAB* scripts are written and run with *R2021a Update 4* release.
 
 ## **3.3. Results**
 
@@ -305,13 +335,12 @@ Authors' classification performances with respect to SNR can be seen in *Figure 
     </tr>
 </table>
 
-My model is trying to decide whether is input data belongs to WiFi, LTE or 5G signal type. However, in the paper, their model is trying to classify a signal into one of the 7 different signal types. I believe this difference is the reason that my accuracies are higher because classification task that I have implemented is much more simpler.
+My model is trying to decide whether is input data belongs to WiFi, LTE or 5G signal type. However, in the paper, their model is trying to classify a signal into one of the 7 different signal class. I believe accuracy differences between the paper and my implementations might be originated from the fact that my models' classification task is much more simpler since there are no coexisting signals.
 
 ### **3.3.2 Confusion Matrices of the Best Models**
 
-Confusion matrices of authors' CNN, LSTM and CNN-LSTM models can be seen in *Figure 8*.
-
-Even though, it is not clearly stated that models from which noise level are used in the confusion matrices in the paper, my results are from noise level of SNR 20 dB. Confusion matrices from my implementations can be seen in figures below. I picked my *`CNN-S-FDA`*, *`LSTM`* and *`CNN-LSTM-S`* models as they have the highest accuracies among their counterpart architectures in that noise level.
+Confusion matrices of authors' CNN, LSTM and CNN-LSTM models can be seen in *Figure 8*. 
+Even though, it is not clearly stated that models from which noise level are used in the confusion matrices in the paper, my results are from noise level of SNR 20 dB. Confusion matrices from my implementations can be seen in figures below. Selected models are *`CNN-S-FDA`*, *`LSTM`* and *`CNN-LSTM-S`* as they have the highest accuracies among their counterpart architectures in that noise level.
 
 <table style="margin-left:auto; margin-right:auto">
     <tr>
@@ -335,6 +364,8 @@ Even though, it is not clearly stated that models from which noise level are use
         </p></td>
     </tr>
 </table>
+
+For the most of the models, trained deep neural networks distinguish WiFi data from the others very well but it struggles with differentiating the LTE and 5G data. In some cases, the model cannot even learn the distinguishing LTE and 5G data. This is the case for the models with accuracies around 60%, 70% and even 80%. This can partially seen from my LSTM model's example above. 
 
 # **4. Conclusion**
 
